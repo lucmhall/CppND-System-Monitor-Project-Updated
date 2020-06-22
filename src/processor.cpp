@@ -29,7 +29,7 @@ float Processor::Utilization() {
   }
   prev_proc_stats = proc_stats;
 
-  return utilization;
+  return 1.0f - utilization;
 }
 
 double Processor::NonIdle(const vector<string> proc_stats) {
