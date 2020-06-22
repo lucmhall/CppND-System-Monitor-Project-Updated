@@ -2,6 +2,7 @@
 
 #include <unistd.h>
 
+#include <algorithm>
 #include <cstddef>
 #include <set>
 #include <string>
@@ -16,24 +17,36 @@ using std::size_t;
 using std::string;
 using std::vector;
 
-// TODO: Return the system's CPU
 Processor& System::Cpu() { return cpu_; }
 
-// TODO: Return a container composed of the system's processes
-vector<Process>& System::Processes() { return processes_; }
+// TODO: Optimize
+vector<Process>& System::Processes() {
+  vector<int> pids = LinuxParser::Pids();
+
+  processes_.clear();
+  // vector<int> existing_pids{};
+  // for (Process process : processes_) {
+  //   existing_pids.push_back(process.Pid());
+  // }
+
+  for (int pid : pids) {
+    // if (std::find(existing_pids.begin(), existing_pids.end(), pid) !=
+    // existing_pids.end()) {
+    processes_.push_back(Process(pid));
+    // }
+  }
+
+  return processes_;
+}
 
 std::string System::Kernel() { return LinuxParser::Kernel(); }
 
-// TODO: Return the system's memory utilization
 float System::MemoryUtilization() { return LinuxParser::MemoryUtilization(); }
 
 std::string System::OperatingSystem() { return LinuxParser::OperatingSystem(); }
 
-// TODO: Return the number of processes actively running on the system
 int System::RunningProcesses() { return LinuxParser::RunningProcesses(); }
 
-// TODO: Return the total number of processes on the system
 int System::TotalProcesses() { return LinuxParser::TotalProcesses(); }
 
-// TODO: Return the number of seconds since the system started running
 long int System::UpTime() { return LinuxParser::UpTime(); }
