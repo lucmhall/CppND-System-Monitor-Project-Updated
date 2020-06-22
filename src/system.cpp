@@ -23,17 +23,20 @@ Processor& System::Cpu() { return cpu_; }
 vector<Process>& System::Processes() {
   vector<int> pids = LinuxParser::Pids();
 
-  processes_.clear();
-  // vector<int> existing_pids{};
-  // for (Process process : processes_) {
-  //   existing_pids.push_back(process.Pid());
-  // }
+  vector<int> existing_pids{};
+  for (Process process : processes_) {
+    existing_pids.push_back(process.Pid());
+  }
 
   for (int pid : pids) {
-    // if (std::find(existing_pids.begin(), existing_pids.end(), pid) !=
-    // existing_pids.end()) {
-    processes_.push_back(Process(pid));
-    // }
+    if (std::find(existing_pids.begin(), existing_pids.end(), pid) ==
+        existing_pids.end()) {
+      processes_.push_back(Process(pid));
+    }
+  }
+
+  for (Process process : processes_) {
+    process.Update();
   }
 
   return processes_;

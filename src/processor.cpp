@@ -9,15 +9,6 @@
 using std::string;
 using std::vector;
 
-void print(vector<double> vec) {
-  string p = "";
-  for (int i = 0; i < vec.size(); i++) {
-    p += std::to_string(vec[i]) + " - ";
-  }
-
-  std::cout << p << "\n";
-}
-
 float Processor::Utilization() {
   float utilization = 0.0f;
   vector<string> proc_stats = LinuxParser::CpuUtilization();

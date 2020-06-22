@@ -8,15 +8,38 @@
 #include <sstream>
 #include <string>
 #include <vector>
+
 using std::string;
 using std::to_string;
 using std::vector;
 
-Process::Process(int pid) : pid(pid) {}
+Process::Process(int pid) : pid(pid) {
+  command = LinuxParser::Command(pid);
+  user = LinuxParser::User(pid);
+  Update();
+}
 
 int Process::Pid() { return pid; }
 
-float Process::CpuUtilization() {
+float Process::CpuUtilization() { return cpu_utilization; }
+
+string Process::Command() { return command; }
+
+string Process::Ram() { return ram; }
+
+string Process::User() { return user; }
+
+long int Process::UpTime() { return uptime; }
+
+bool Process::operator<(Process const& a) const { return pid < a.pid; }
+
+void Process::Update() {
+  cpu_utilization = CalculateUtilization();
+  ram = LinuxParser::Ram(pid);
+  uptime = LinuxParser::UpTime(pid);
+}
+
+float Process::CalculateUtilization() {
   long hz = sysconf(_SC_CLK_TCK);
   long uptime = LinuxParser::UpTime();
   vector<string> proc_stats{};
@@ -42,13 +65,3 @@ float Process::CpuUtilization() {
   }
   return 0;
 }
-
-string Process::Command() { return LinuxParser::Command(pid); }
-
-string Process::Ram() { return LinuxParser::Ram(pid); }
-
-string Process::User() { return LinuxParser::User(pid); }
-
-long int Process::UpTime() { return LinuxParser::UpTime(pid); }
-
-bool Process::operator<(Process const& a) const { return pid < a.pid; }
